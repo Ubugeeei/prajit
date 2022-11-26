@@ -22,6 +22,10 @@ impl Parser {
         }
     }
 
+    pub fn parse(&mut self) -> Node {
+      self.parse_by_current_precedence(0)
+    }
+
     fn parse_by_current_precedence(&mut self, precedence: u8) -> Node {
         let mut node = self.parse_unary();
 
