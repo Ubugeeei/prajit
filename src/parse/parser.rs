@@ -23,14 +23,14 @@ impl Parser {
     }
 
     fn parse_by_current_precedence(&mut self, precedence: u8) -> Node {
-        let node = self.parse_prefix();
+        let node = self.parse_unary();
 
         while precedence < self.peeked.get_precedence() && self.peeked != Token::EOF {}
 
         node
     }
 
-    fn parse_prefix(&mut self) -> Node {
+    fn parse_unary(&mut self) -> Node {
         match self.current {
             Token::Minus => {
                 let n = match self.peeked {
