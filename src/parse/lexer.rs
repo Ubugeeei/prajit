@@ -1,3 +1,5 @@
+use super::token::Token;
+
 pub struct Lexer {
     input: String,
     position: isize,
@@ -13,6 +15,16 @@ impl Lexer {
             read_position: 0,
             ch: '\0',
         }
+    }
+
+    fn digit(&mut self) -> Token {
+        let start_pos = self.position as usize;
+        while Lexer::is_digit(self.ch) {
+            self.read();
+        }
+        let literal = &self.input[start_pos..(self.position as usize)];
+        let num = literal.parse::<f64>().unwrap();
+        Token::Number(num)
     }
 
     fn read(&mut self) {
