@@ -50,6 +50,16 @@ impl Lexer {
             .unwrap()
     }
 
+    fn skip_white_space(&mut self) {
+        while self.peek() == ' '
+            || self.peek() == '\t'
+            || self.peek() == '\n'
+            || self.peek() == '\r'
+        {
+            self.read();
+        }
+    }
+
     fn is_digit(ch: char) -> bool {
         '0' <= ch && ch <= '9' || ch == '.'
     }
