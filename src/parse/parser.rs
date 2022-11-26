@@ -18,6 +18,14 @@ impl Parser {
         }
     }
 
+    fn parse_by_current_precedence(&mut self, precedence: u8) -> Node {
+        let node = self.parse_prefix();
+
+        while precedence < self.peeked.get_precedence() && self.peeked != Token::EOF {}
+
+        node
+    }
+
     fn parse_prefix(&mut self) -> Node {
         match self.current {
             Token::Minus => {
