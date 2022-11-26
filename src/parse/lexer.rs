@@ -14,4 +14,8 @@ impl Lexer {
             ch: '\0',
         }
     }
+
+    fn is_digit(ch: char) -> bool {
+        '0' <= ch && ch <= '9' || ch == '.'
+    }
 }
