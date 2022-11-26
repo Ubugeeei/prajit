@@ -1,4 +1,4 @@
-use super::{lexer::Lexer, token::Token};
+use super::{ast::Node, lexer::Lexer, token::Token};
 
 pub struct Parser {
     lx: Lexer,
@@ -15,6 +15,21 @@ impl Parser {
             lx,
             current,
             peeked,
+        }
+    }
+
+    fn parse_prefix(&mut self) -> Node {
+        match self.current {
+            Token::Minus => {
+                let n = match self.peeked {
+                    Token::Number(i) => i,
+                    _ => panic!(),
+                };
+                self.next();
+                Node::Number(-n)
+            }
+            Token::Number(n) => Node::Number(n),
+            _ => panic!(),
         }
     }
 
