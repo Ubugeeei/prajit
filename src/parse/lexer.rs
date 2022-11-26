@@ -17,6 +17,20 @@ impl Lexer {
         }
     }
 
+    pub fn next(&mut self) -> Token {
+        self.skip_white_space();
+        self.read();
+
+        match self.ch {
+            '+' => Token::Plus,
+            '-' => Token::Minus,
+            '*' => Token::Asterisk,
+            '/' => Token::Slash,
+            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.digit(),
+            _ => unreachable!(),
+        }
+    }
+
     fn digit(&mut self) -> Token {
         let start_pos = self.position as usize;
         while Lexer::is_digit(self.ch) {
