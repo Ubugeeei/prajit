@@ -23,7 +23,7 @@ impl Parser {
     }
 
     pub fn parse(&mut self) -> Node {
-      self.parse_by_current_precedence(0)
+        self.parse_by_current_precedence(0)
     }
 
     fn parse_by_current_precedence(&mut self, precedence: u8) -> Node {
@@ -56,6 +56,7 @@ impl Parser {
 
     fn parse_binary(&mut self, l: Node) -> Node {
         let o = self.current;
+        self.next();
         let r = self.parse_by_current_precedence(o.get_precedence());
         Node::BinaryOperator(OperatorNode {
             op: o,
@@ -67,5 +68,33 @@ impl Parser {
     fn next(&mut self) {
         self.current = self.peeked;
         self.peeked = self.lx.next();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_parse() {
+        let input = String::from("1 * 2 + 3 * 4");
+        let mut p = Parser::new(input);
+
+        let node = p.parse();
+        assert_eq!(
+            node,
+            Node::BinaryOperator(OperatorNode {
+                op: Token::Plus,
+                left: Box::new(Node::BinaryOperator(OperatorNode {
+                    op: Token::Asterisk,
+                    left: Box::new(Node::Number(1.0)),
+                    right: Box::new(Node::Number(2.0))
+                })),
+                right: Box::new(Node::BinaryOperator(OperatorNode {
+                    op: Token::Asterisk,
+                    left: Box::new(Node::Number(3.0)),
+                    right: Box::new(Node::Number(4.0))
+                }))
+            })
+        )
     }
 }
