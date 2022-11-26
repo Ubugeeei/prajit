@@ -27,7 +27,8 @@ impl Lexer {
             '*' => Token::Asterisk,
             '/' => Token::Slash,
             '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => self.digit(),
-            _ => unreachable!(),
+            '\0' => Token::EOF,
+            _ => Token::Illegal,
         }
     }
 
@@ -91,5 +92,57 @@ impl Lexer {
 
     fn is_digit(ch: char) -> bool {
         '0' <= ch && ch <= '9' || ch == '.'
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Lexer;
+    use crate::parse::token::Token;
+
+    #[test]
+    fn test_lexer() {
+        let input = String::from(
+            r#" 1   + 
+        23 + 1.5                  * 3 / 0 - 1 "#,
+        );
+
+        let mut l = Lexer::new(input);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(1.0));
+
+        let got = l.next();
+        assert_eq!(got, Token::Plus);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(23.0));
+
+        let got = l.next();
+        assert_eq!(got, Token::Plus);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(1.5));
+
+        let got = l.next();
+        assert_eq!(got, Token::Asterisk);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(3.0));
+
+        let got = l.next();
+        assert_eq!(got, Token::Slash);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(0.0));
+
+        let got = l.next();
+        assert_eq!(got, Token::Minus);
+
+        let got = l.next();
+        assert_eq!(got, Token::Number(1.0));
+
+        let got = l.next();
+        assert_eq!(got, Token::EOF);
     }
 }
