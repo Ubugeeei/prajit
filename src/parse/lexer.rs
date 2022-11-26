@@ -1,7 +1,7 @@
 pub struct Lexer {
     input: String,
-    position: i32,
-    read_position: i32,
+    position: isize,
+    read_position: isize,
     ch: char,
 }
 
@@ -13,6 +13,20 @@ impl Lexer {
             read_position: 0,
             ch: '\0',
         }
+    }
+
+    fn read(&mut self) {
+        if self.read_position >= self.input.len() as isize {
+            self.ch = '\0';
+        } else {
+            self.ch = self
+                .input
+                .chars()
+                .nth(self.read_position.try_into().unwrap())
+                .unwrap();
+        }
+        self.position = self.read_position;
+        self.read_position += 1;
     }
 
     fn is_digit(ch: char) -> bool {
