@@ -17,4 +17,9 @@ impl Parser {
             peeked,
         }
     }
+
+    fn next(&mut self) {
+        self.current = self.peeked;
+        self.peeked = self.lx.next();
+    }
 }
