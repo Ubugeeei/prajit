@@ -29,6 +29,17 @@ impl Lexer {
         self.read_position += 1;
     }
 
+    fn peek(&mut self) -> char {
+        if self.read_position >= self.input.len() as isize {
+            '\0'
+        } else {
+            self.input
+                .chars()
+                .nth(self.read_position.try_into().unwrap())
+                .unwrap()
+        }
+    }
+
     fn is_digit(ch: char) -> bool {
         '0' <= ch && ch <= '9' || ch == '.'
     }
