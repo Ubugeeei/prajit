@@ -1,4 +1,8 @@
-use super::{ast::Node, lexer::Lexer, token::Token};
+use super::{
+    ast::{Node, OperatorNode},
+    lexer::Lexer,
+    token::Token,
+};
 
 pub struct Parser {
     lx: Lexer,
@@ -39,6 +43,16 @@ impl Parser {
             Token::Number(n) => Node::Number(n),
             _ => panic!(),
         }
+    }
+
+    fn parse_binary(&mut self, l: Node) -> Node {
+        let o = self.current;
+        let r = self.parse_by_current_precedence(o.get_precedence());
+        Node::BinaryOperator(OperatorNode {
+            op: o,
+            left: Box::new(l),
+            right: Box::new(r),
+        })
     }
 
     fn next(&mut self) {
