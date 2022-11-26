@@ -38,6 +38,9 @@ impl Lexer {
         }
         let literal = &self.input[start_pos..(self.position as usize)];
         let num = literal.parse::<f64>().unwrap();
+
+        self.back();
+
         Token::Number(num)
     }
 
