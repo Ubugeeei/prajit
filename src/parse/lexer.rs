@@ -40,6 +40,16 @@ impl Lexer {
         }
     }
 
+    fn back(&mut self) {
+        self.position -= 1;
+        self.read_position -= 1;
+        self.ch = self
+            .input
+            .chars()
+            .nth(self.position.try_into().unwrap())
+            .unwrap()
+    }
+
     fn is_digit(ch: char) -> bool {
         '0' <= ch && ch <= '9' || ch == '.'
     }
