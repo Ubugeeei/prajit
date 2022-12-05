@@ -1,3 +1,5 @@
+use std::io::{Error, ErrorKind};
+
 use super::{
     ast::{Node, OperatorNode},
     lexer::Lexer,
@@ -22,24 +24,24 @@ impl Parser {
         }
     }
 
-    pub fn parse(&mut self) -> Node {
+    pub fn parse(&mut self) -> Result<Node, Error> {
         self.parse_by_current_precedence(0)
     }
 
-    fn parse_by_current_precedence(&mut self, precedence: u8) -> Node {
-        let mut node = self.parse_unary();
+    fn parse_by_current_precedence(&mut self, precedence: u8) -> Result<Node, Error> {
+        let mut node = self.parse_unary()?;
 
         while precedence < self.peeked.get_precedence() && self.peeked != Token::EOF {
             if let Token::Plus | Token::Minus | Token::Asterisk | Token::Slash = self.peeked {
                 self.next();
-                node = self.parse_binary(node);
+                node = self.parse_binary(node)?;
             }
         }
 
-        node
+        Ok(node)
     }
 
-    fn parse_unary(&mut self) -> Node {
+    fn parse_unary(&mut self) -> Result<Node, Error> {
         match self.current {
             Token::Minus => {
                 let n = match self.peeked {
@@ -47,22 +49,25 @@ impl Parser {
                     _ => panic!(),
                 };
                 self.next();
-                Node::Number(-n)
+                Ok(Node::Number(-n))
             }
-            Token::Number(n) => Node::Number(n),
-            _ => panic!(),
+            Token::Number(n) => Ok(Node::Number(n)),
+            _ => Err(Error::new(
+                ErrorKind::InvalidInput,
+                format!("{:?}", self.current),
+            )),
         }
     }
 
-    fn parse_binary(&mut self, l: Node) -> Node {
+    fn parse_binary(&mut self, l: Node) -> Result<Node, Error> {
         let o = self.current;
         self.next();
-        let r = self.parse_by_current_precedence(o.get_precedence());
-        Node::BinaryOperator(OperatorNode {
+        let r = self.parse_by_current_precedence(o.get_precedence())?;
+        Ok(Node::BinaryOperator(OperatorNode {
             op: o,
             left: Box::new(l),
             right: Box::new(r),
-        })
+        }))
     }
 
     fn next(&mut self) {
@@ -81,7 +86,7 @@ mod tests {
 
         let node = p.parse();
         assert_eq!(
-            node,
+            node.unwrap(),
             Node::BinaryOperator(OperatorNode {
                 op: Token::Plus,
                 left: Box::new(Node::BinaryOperator(OperatorNode {
