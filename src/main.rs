@@ -33,15 +33,40 @@ fn main() {
                 break;
             }
 
-            let ast = parse::parser::Parser::new(input).parse();
-            let result = eval::eval(ast);
-            println!("{}", result);
+            let res = parse::parser::Parser::new(input.clone()).parse();
+            match res {
+                Ok(ast) => {
+                    let result = eval::eval(ast);
+                    println!("{}\n", result);
+                }
+                Err(e) => {
+                    println!(
+                        "[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
+                        e.kind(),
+                        e,
+                        input
+                    );
+                }
+            }
         }
     } else {
         args[1..].into_iter().for_each(|input| {
-            let ast = parse::parser::Parser::new(String::from(input)).parse();
-            let result = eval::eval(ast);
-            print!("{} ", result);
+            let res = parse::parser::Parser::new(String::from(input)).parse();
+            match res {
+                Ok(ast) => {
+                    let result = eval::eval(ast);
+                    print!("{} ", result);
+                }
+                Err(e) => {
+                    println!(
+                        "\n[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
+                        e.kind(),
+                        e,
+                        input
+                    );
+                    std::process::exit(1);
+                }
+            }
         });
     }
 }
