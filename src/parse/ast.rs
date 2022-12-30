@@ -3,7 +3,7 @@ use super::token::Token;
 #[derive(Debug, PartialEq)]
 pub enum Node {
     BinaryOperator(OperatorNode),
-    Number(f64),
+    Number(i32),
 }
 
 #[derive(Debug, PartialEq)]

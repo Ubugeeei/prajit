@@ -91,13 +91,13 @@ mod tests {
                 op: Token::Plus,
                 left: Box::new(Node::BinaryOperator(OperatorNode {
                     op: Token::Asterisk,
-                    left: Box::new(Node::Number(1.0)),
-                    right: Box::new(Node::Number(2.0))
+                    left: Box::new(Node::Number(1)),
+                    right: Box::new(Node::Number(2))
                 })),
                 right: Box::new(Node::BinaryOperator(OperatorNode {
                     op: Token::Asterisk,
-                    left: Box::new(Node::Number(3.0)),
-                    right: Box::new(Node::Number(4.0))
+                    left: Box::new(Node::Number(3)),
+                    right: Box::new(Node::Number(4))
                 }))
             })
         )

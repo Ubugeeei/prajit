@@ -2,7 +2,7 @@
 pub enum Token {
     Illegal,
     EOF,
-    Number(f64),
+    Number(i32),
     Plus,
     Minus,
     Slash,

@@ -38,7 +38,7 @@ impl Lexer {
             self.read();
         }
         let literal = &self.input[start_pos..(self.position as usize)];
-        let num = literal.parse::<f64>().unwrap();
+        let num = literal.parse::<i32>().unwrap();
 
         self.back();
 
@@ -104,43 +104,43 @@ mod tests {
     fn test_lexer() {
         let input = String::from(
             r#" 1   + 
-        23 + 1.5                  * 3 / 0 - 1 "#,
+        23 + 1                  * 3 / 0 - 1 "#,
         );
 
         let mut l = Lexer::new(input);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(1.0));
+        assert_eq!(got, Token::Number(1));
 
         let got = l.next();
         assert_eq!(got, Token::Plus);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(23.0));
+        assert_eq!(got, Token::Number(23));
 
         let got = l.next();
         assert_eq!(got, Token::Plus);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(1.5));
+        assert_eq!(got, Token::Number(1));
 
         let got = l.next();
         assert_eq!(got, Token::Asterisk);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(3.0));
+        assert_eq!(got, Token::Number(3));
 
         let got = l.next();
         assert_eq!(got, Token::Slash);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(0.0));
+        assert_eq!(got, Token::Number(0));
 
         let got = l.next();
         assert_eq!(got, Token::Minus);
 
         let got = l.next();
-        assert_eq!(got, Token::Number(1.0));
+        assert_eq!(got, Token::Number(1));
 
         let got = l.next();
         assert_eq!(got, Token::EOF);
