@@ -1,12 +1,11 @@
-use crate::{eval::hosting::eval, parse::parse};
+use crate::{eval::host::eval, parse::parse};
 
 pub fn run(args: Vec<String>) {
     args[1..].into_iter().for_each(|input| {
         let res = parse(String::from(input));
         match res {
             Ok(ast) => {
-                let result = eval(ast);
-                print!("{} ", result);
+                print!("{} ", eval(ast));
             }
             Err(e) => {
                 println!(

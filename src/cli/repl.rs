@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use crate::{eval::hosting::eval, parse::parse};
+use crate::{eval::host::eval, parse::parse};
 
 pub fn start_repl() {
     loop {

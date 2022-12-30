@@ -1,2 +1,3 @@
-pub mod hosting;
+pub mod compile;
+pub mod host;
 pub mod jit;

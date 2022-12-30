@@ -1,4 +1,4 @@
-use cli::{repl::start_repl, run::run};
+use cli::{emit_assembly::emit_assembly, repl::start_repl, run::run};
 
 mod cli;
 mod eval;
@@ -16,8 +16,18 @@ fn main() {
         None => false,
     };
 
+    let is_emit_assembly = match args
+        .iter()
+        .find(|it| it == &"-e" || it == &"--emit-assembly")
+    {
+        Some(_) => true,
+        None => false,
+    };
+
     if is_interactive {
         start_repl();
+    } else if is_emit_assembly {
+        emit_assembly(args);
     } else {
         run(args);
     }
