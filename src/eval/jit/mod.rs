@@ -102,7 +102,7 @@ impl Compiler {
 
 #[cfg(test)]
 mod tests {
-    use crate::parse::parser::parse;
+    use crate::parse::parse;
 
     use super::*;
 

@@ -1,7 +1,7 @@
-use std::io::Write;
+use cli::{repl::start_repl, run::run};
 
+mod cli;
 mod eval;
-mod jit;
 mod parse;
 
 fn main() {
@@ -17,56 +17,8 @@ fn main() {
     };
 
     if is_interactive {
-        loop {
-            print!("> ");
-            let _ = std::io::stdout().flush();
-
-            let mut input = String::new();
-            let result = std::io::stdin().read_line(&mut input);
-            if let Err(_) = result {
-                println!("failed to read line.");
-                std::process::exit(1);
-            }
-
-            if &input == "exit\n" {
-                println!("bye.");
-                break;
-            }
-
-            let res = parse::parser::parse(input.clone());
-            match res {
-                Ok(ast) => {
-                    let result = eval::eval(ast);
-                    println!("{}\n", result);
-                }
-                Err(e) => {
-                    println!(
-                        "[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
-                        e.kind(),
-                        e,
-                        input
-                    );
-                }
-            }
-        }
+        start_repl();
     } else {
-        args[1..].into_iter().for_each(|input| {
-            let res = parse::parser::parse(String::from(input));
-            match res {
-                Ok(ast) => {
-                    let result = eval::eval(ast);
-                    print!("{} ", result);
-                }
-                Err(e) => {
-                    println!(
-                        "\n[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
-                        e.kind(),
-                        e,
-                        input
-                    );
-                    std::process::exit(1);
-                }
-            }
-        });
+        run(args);
     }
 }
