@@ -14,7 +14,6 @@ struct Compiler {
     ast: Node,
     code: Vec<u8>,
 }
-
 impl Compiler {
     fn new(ast: Node) -> Self {
         Compiler { ast, code: vec![] }
@@ -103,12 +102,13 @@ impl Compiler {
 
 #[cfg(test)]
 mod tests {
+    use crate::parse::parser::parse;
+
     use super::*;
-    use crate::parse::parser::{parse, Parser};
 
     #[test]
     fn test_compile() {
-        let ast = Parser::new(String::from("2 * 3 + 4 * 5")).parse().unwrap();
+        let ast = parse(String::from("2 * 3 + 4 * 5")).unwrap();
         let byte_codes = compile(ast);
         assert_eq!(
             byte_codes,

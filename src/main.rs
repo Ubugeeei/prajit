@@ -33,7 +33,7 @@ fn main() {
                 break;
             }
 
-            let res = parse::parser::Parser::new(input.clone()).parse();
+            let res = parse::parser::parse(input.clone());
             match res {
                 Ok(ast) => {
                     let result = eval::eval(ast);
@@ -51,7 +51,7 @@ fn main() {
         }
     } else {
         args[1..].into_iter().for_each(|input| {
-            let res = parse::parser::Parser::new(String::from(input)).parse();
+            let res = parse::parser::parse(String::from(input));
             match res {
                 Ok(ast) => {
                     let result = eval::eval(ast);
