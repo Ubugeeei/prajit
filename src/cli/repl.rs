@@ -1,8 +1,11 @@
 use std::io::Write;
 
-use crate::{eval::host::eval, parse::parse};
+use crate::{
+    eval::{host::eval, jit::jit_compile},
+    parse::parse,
+};
 
-pub fn start_repl() {
+pub fn start_repl(is_jit_compile: bool) {
     loop {
         print!("> ");
         let _ = std::io::stdout().flush();
@@ -19,19 +22,25 @@ pub fn start_repl() {
             break;
         }
 
-        let res = parse(input.clone());
-        match res {
-            Ok(ast) => {
-                let result = eval(ast);
-                println!("{}\n", result);
-            }
-            Err(e) => {
-                println!(
-                    "[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
-                    e.kind(),
-                    e,
-                    input
-                );
+        if is_jit_compile {
+            let result = jit_compile(input.clone());
+            println!("{}\n", result);
+            continue;
+        } else {
+            let res = parse(input.clone());
+            match res {
+                Ok(ast) => {
+                    let result = eval(ast);
+                    println!("{}\n", result);
+                }
+                Err(e) => {
+                    println!(
+                        "[\x1b[31mError\x1b[0m] {:?}: {}\ninput: \x1b[33m{}\x1b[0m",
+                        e.kind(),
+                        e,
+                        input
+                    );
+                }
             }
         }
     }

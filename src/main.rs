@@ -24,8 +24,13 @@ fn main() {
         None => false,
     };
 
+    let is_jit_compile = match args.iter().find(|it| it == &"-j" || it == &"--jit-compile") {
+        Some(_) => true,
+        None => false,
+    };
+
     if is_interactive {
-        start_repl();
+        start_repl(is_jit_compile);
     } else if is_emit_assembly {
         emit_assembly(args);
     } else {
