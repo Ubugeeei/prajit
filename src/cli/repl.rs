@@ -1,7 +1,10 @@
 use std::io::Write;
 
 use crate::{
-    eval::{host::eval, jit::jit_compile},
+    eval::{
+        host::eval,
+        jit::{jit_compile, Isa},
+    },
     parse::parse,
 };
 
@@ -12,7 +15,7 @@ pub fn start_repl(is_jit_compile: bool) {
 
         let mut input = String::new();
         let result = std::io::stdin().read_line(&mut input);
-        if let Err(_) = result {
+        if result.is_err() {
             println!("failed to read line.");
             std::process::exit(1);
         }
@@ -23,8 +26,8 @@ pub fn start_repl(is_jit_compile: bool) {
         }
 
         if is_jit_compile {
-            let result = jit_compile(input.clone());
-            println!("{}\n", result);
+            let f = jit_compile::<f64>(&input, Isa::Arm64);
+            f();
             continue;
         } else {
             let res = parse(input.clone());
